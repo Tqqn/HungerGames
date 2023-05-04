@@ -1,9 +1,8 @@
 package com.tqqn.hungergames.game.tasks;
 
 import com.tqqn.hungergames.game.GameManager;
-import com.tqqn.hungergames.game.GameState;
+import com.tqqn.hungergames.game.GameStates;
 import com.tqqn.hungergames.game.utils.GameUtils;
-import com.tqqn.hungergames.messages.NMessages;
 import com.tqqn.hungergames.messages.SMessages;
 import com.tqqn.hungergames.sounds.Sounds;
 import org.bukkit.Bukkit;
@@ -23,7 +22,7 @@ public class StartCountdownTask extends BukkitRunnable {
     public void run() {
         if (startGameTime == 0) {
             cancel();
-            gameManager.setGameState(GameState.ACTIVE);
+            gameManager.setGameState(GameStates.ACTIVE);
             return;
         }
 

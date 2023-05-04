@@ -6,18 +6,22 @@ import org.bukkit.Bukkit;
 
 public class StartingGameState extends GameState {
 
+    private HungerGames plugin;
+
 
     public StartingGameState(HungerGames plugin) {
-        super(plugin);
+        super("StartingGameState");
+        this.plugin = plugin;
+        super.onEnable();
     }
 
     @Override
-    public void onEnable() {
+    public void registerEvents() {
 
     }
 
     @Override
-    public void onDisable() {
-        Bukkit.getLogger().info("");
+    public void deRegisterEvents() {
+
     }
 }

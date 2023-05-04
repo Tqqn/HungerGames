@@ -1,8 +1,8 @@
 package com.tqqn.hungergames.game;
 
-public enum GameState {
+public enum GameStates {
 
-    LOBBY,
+    WAITING,
     STARTING,
     ACTIVE,
     END,

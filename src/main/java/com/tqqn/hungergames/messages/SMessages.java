@@ -5,7 +5,8 @@ import org.bukkit.Color;
 
 public enum SMessages {
 
-    GAME_START_COUNTDOWN("&cGame is starting in &f%%SECONDS%%","%%SECONDS%%","","");
+    GAME_START_COUNTDOWN("&cGame is starting in &f%%SECONDS%%","%%SECONDS%%","",""),
+    PLAYER_JOIN("&f%%PLAYER%% &ehas joined the game (&b%%CURRENTPLAYERS%%&e/&b%%MAXPLAYERS%%", "%%PLAYER%%", "%%CURRENTPLAYERS%%", "%%MAXPLAYERS%%");
 
     private final String message;
     private final String placeholder1;
@@ -31,6 +32,4 @@ public enum SMessages {
     public String getMessage(String replacePlaceHolderArgs1, String replacePlaceHolderArgs2, String replacePlaceHolderArgs3) {
         return ChatColor.translateAlternateColorCodes('&', (message.replace(this.placeholder1, replacePlaceHolderArgs1).replace(this.placeholder2, replacePlaceHolderArgs2).replace(this.placeholder3, replacePlaceHolderArgs3)));
     }
-
-
 }
