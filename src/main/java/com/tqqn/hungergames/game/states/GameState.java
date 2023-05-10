@@ -17,7 +17,7 @@ public abstract class GameState {
         onEnable();
     }
 
-    public void onEnable() {
+    private void onEnable() {
         registerEvents();
         Bukkit.getLogger().info("Activated Game-State: " + name);
     }

@@ -12,7 +12,7 @@ public class StartingGameState extends GameState {
     public StartingGameState(HungerGames plugin) {
         super("StartingGameState");
         this.plugin = plugin;
-        super.onEnable();
+        super.init();
     }
 
     @Override

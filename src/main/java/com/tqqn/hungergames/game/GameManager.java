@@ -2,10 +2,13 @@ package com.tqqn.hungergames.game;
 
 import com.tqqn.hungergames.HungerGames;
 import com.tqqn.hungergames.game.arena.Arena;
+import com.tqqn.hungergames.game.globallisteners.GlobalPlayerChatListener;
+import com.tqqn.hungergames.game.states.activestate.ActiveGameState;
+import com.tqqn.hungergames.game.states.endstate.EndGameState;
+import com.tqqn.hungergames.game.states.restartingstate.RestartingGameState;
 import com.tqqn.hungergames.game.states.startingstate.StartingGameState;
 import com.tqqn.hungergames.game.states.waitingstate.WaitingGameState;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 public class GameManager {
@@ -21,6 +24,7 @@ public class GameManager {
     public GameManager(HungerGames plugin) {
         this.plugin = plugin;
         this.arena = new Arena(plugin.getPluginConfig().getMinPlayers(), plugin.getPluginConfig().getMaxPlayers(), plugin.getPluginConfig().getSpawnLocations());
+        registerGlobalEvents();
     }
 
     public void setGameState(GameStates gameState) {
@@ -36,7 +40,17 @@ public class GameManager {
                 break;
             case WAITING:
                 WaitingGameState waitingGameState = new WaitingGameState(plugin);
-
+                waitingGameState.init();
+                break;
+            case ACTIVE:
+                ActiveGameState activeGameState = new ActiveGameState(plugin);
+                activeGameState.init();
+            case END:
+                EndGameState endGameState = new EndGameState(plugin);
+                endGameState.init();
+            case RESTARTING:
+                RestartingGameState restartingGameState = new RestartingGameState(plugin);
+                restartingGameState.init();
         }
     }
 
@@ -47,5 +61,10 @@ public class GameManager {
     private void startCountdownToStartGame() {
         this.countdownTask = new CountdownTask(this);
         this.countdownTask.runTaskTimer(plugin, 0, 20);
+    }
+
+    private void registerGlobalEvents() {
+        PluginManager pluginManager = plugin.getServer().getPluginManager();
+        pluginManager.registerEvents(new GlobalPlayerChatListener(), plugin);
     }
 }

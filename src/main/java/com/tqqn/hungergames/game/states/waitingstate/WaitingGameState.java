@@ -10,12 +10,9 @@ public class WaitingGameState extends GameState {
     public WaitingGameState(HungerGames plugin) {
         super("WaitingGameState");
         this.plugin = plugin;
-        super.onEnable();
+        super.init();
     }
 
-    public void disable() {
-        super.onDisable();
-    }
 
 
     @Override
