@@ -1,7 +1,11 @@
 package com.tqqn.hungergames.game.arena;
 
+import com.tqqn.hungergames.game.utils.GameUtils;
+import com.tqqn.hungergames.messages.SMessages;
 import com.tqqn.hungergames.playerdata.PluginPlayer;
+import com.tqqn.hungergames.sounds.Sounds;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.HashMap;
@@ -32,6 +36,8 @@ public class Arena {
     public void addPlayerToArena(PluginPlayer player) {
         if (playersInArena.containsKey(player.getUuid())) return;
         playersInArena.put(player.getUuid(), player);
+        GameUtils.broadcastMessage(SMessages.PLAYER_JOIN.getMessage(player.getDisplayName(),String.valueOf(getPlayersInArena().size()), String.valueOf(getMaximumPlayers())));
+        Bukkit.getOnlinePlayers().forEach(Sounds.COUNTDOWN_SOUND::playPacketSound);
     }
 
     public boolean isArenaFull() {
