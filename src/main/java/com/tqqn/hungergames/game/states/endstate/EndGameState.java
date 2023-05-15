@@ -8,10 +8,11 @@ public class EndGameState extends GameState {
     private HungerGames plugin;
 
     public EndGameState(HungerGames plugin) {
-        super("EndGameState");
+        super("EndGameState", plugin.getGameManager());
         this.plugin = plugin;
         super.init();
     }
+
 
 
     @Override

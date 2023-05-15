@@ -2,11 +2,7 @@ package com.tqqn.hungergames.game.globallisteners;
 
 import com.tqqn.hungergames.game.GameManager;
 import com.tqqn.hungergames.game.GameStates;
-import com.tqqn.hungergames.game.utils.GameUtils;
-import com.tqqn.hungergames.messages.SMessages;
 import com.tqqn.hungergames.playerdata.PluginPlayer;
-import com.tqqn.hungergames.sounds.Sounds;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,16 +24,22 @@ public class GlobalPlayerJoinListener implements Listener {
         if (gameManager.getGameStates() != GameStates.STARTING || gameManager.getGameStates() != GameStates.WAITING) {
             if (!player.hasPermission("hungergames.joinstaff")) {
                 player.kickPlayer("Game has already started!");
+                return;
             }
-            gameManager.getArena().addPlayerToArena(new PluginPlayer(player.getUniqueId(), player.getDisplayName()));
+            if (gameManager.getGameStates() != GameStates.ACTIVE) return;
+            gameManager.getArena().addSpectatorToArena(new PluginPlayer(player.getUniqueId(), player.getDisplayName(), player));
 
         } else if (gameManager.getGameStates() == GameStates.STARTING || gameManager.getGameStates() == GameStates.WAITING) {
             if (gameManager.getArena().isArenaFull()) {
                 if (!player.hasPermission("hungergames.joinstaff")) {
                     player.kickPlayer("Game is already full!");
                 }
+
             } else {
-                gameManager.getArena().addPlayerToArena(new PluginPlayer(player.getUniqueId(), player.getDisplayName()));
+                gameManager.getArena().addPlayerToArena(new PluginPlayer(player.getUniqueId(), player.getDisplayName(), player));
+                if (gameManager.getArena().isArenaFull()) {
+                    gameManager.setGameState(GameStates.STARTING);
+                }
             }
         }
     }

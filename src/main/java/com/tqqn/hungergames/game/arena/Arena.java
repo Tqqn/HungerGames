@@ -6,7 +6,9 @@ import com.tqqn.hungergames.playerdata.PluginPlayer;
 import com.tqqn.hungergames.sounds.Sounds;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,8 @@ public class Arena {
 
     @Getter
     private Map<UUID, PluginPlayer> playersInArena = new HashMap<>();
+    @Getter
+    private Map<UUID, PluginPlayer> spectatorsInArena = new HashMap<>();
 
     public Arena(int minimumPlayers, int maximumPlayers, List<Location> spawnLocations) {
         this.minimumPlayers = minimumPlayers;
@@ -38,6 +42,15 @@ public class Arena {
         playersInArena.put(player.getUuid(), player);
         GameUtils.broadcastMessage(SMessages.PLAYER_JOIN.getMessage(player.getDisplayName(),String.valueOf(getPlayersInArena().size()), String.valueOf(getMaximumPlayers())));
         Bukkit.getOnlinePlayers().forEach(Sounds.COUNTDOWN_SOUND::playPacketSound);
+    }
+
+    public void addSpectatorToArena(PluginPlayer player) {
+        if (spectatorsInArena.containsKey(player.getUuid())) return;
+        spectatorsInArena.put(player.getUuid(), player);
+
+        if (player.getPlayer() == null) return;
+
+        player.getPlayer().setGameMode(GameMode.SPECTATOR);
     }
 
     public boolean isArenaFull() {

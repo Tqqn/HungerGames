@@ -3,6 +3,7 @@ package com.tqqn.hungergames.game.tasks;
 import com.tqqn.hungergames.game.GameManager;
 import com.tqqn.hungergames.game.GameStates;
 import com.tqqn.hungergames.game.utils.GameUtils;
+import com.tqqn.hungergames.messages.NMessages;
 import com.tqqn.hungergames.messages.SMessages;
 import com.tqqn.hungergames.sounds.Sounds;
 import org.bukkit.Bukkit;
@@ -24,6 +25,11 @@ public class StartCountdownTask extends BukkitRunnable {
             cancel();
             gameManager.setGameState(GameStates.ACTIVE);
             return;
+        }
+        if (gameManager.getArena().getPlayersInArena().size() < gameManager.getArena().getMinimumPlayers()) {
+            cancel();
+            gameManager.setGameState(GameStates.WAITING);
+            GameUtils.broadcastMessage(NMessages.CANCEL_RESTART_NOT_ENOUGH_PLAYERS.getMessage());
         }
 
         Bukkit.getOnlinePlayers().forEach(Sounds.COUNTDOWN_SOUND::playPacketSound);

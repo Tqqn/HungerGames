@@ -8,7 +8,7 @@ public class WaitingGameState extends GameState {
 
     private final HungerGames plugin;
     public WaitingGameState(HungerGames plugin) {
-        super("WaitingGameState");
+        super("WaitingGameState", plugin.getGameManager());
         this.plugin = plugin;
         super.init();
     }

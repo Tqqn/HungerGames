@@ -8,11 +8,16 @@ public class ActiveGameState extends GameState {
     private final HungerGames plugin;
 
     public ActiveGameState(HungerGames plugin) {
-        super("ActiveGameState");
+        super("ActiveGameState", plugin.getGameManager());
         this.plugin = plugin;
         super.init();
     }
 
+
+    @Override
+    public void registerState() {
+
+    }
 
     @Override
     public void registerEvents() {

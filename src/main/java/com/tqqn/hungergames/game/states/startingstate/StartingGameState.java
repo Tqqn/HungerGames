@@ -10,7 +10,7 @@ public class StartingGameState extends GameState {
 
 
     public StartingGameState(HungerGames plugin) {
-        super("StartingGameState");
+        super("StartingGameState", plugin.getGameManager());
         this.plugin = plugin;
         super.init();
     }

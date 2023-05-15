@@ -8,7 +8,7 @@ public class RestartingGameState extends GameState {
     private final HungerGames plugin;
 
     public RestartingGameState(HungerGames plugin) {
-        super("RestartingGameState");
+        super("RestartingGameState", plugin.getGameManager());
         this.plugin = plugin;
         super.init();
     }
