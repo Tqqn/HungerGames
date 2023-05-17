@@ -14,6 +14,10 @@ public class WaitingGameState extends GameState {
     }
 
 
+    @Override
+    public void registerGameState() {
+        plugin.getGameManager().registerGameState(this);
+    }
 
     @Override
     public void registerEvents() {

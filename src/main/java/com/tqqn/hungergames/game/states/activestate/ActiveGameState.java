@@ -15,8 +15,8 @@ public class ActiveGameState extends GameState {
 
 
     @Override
-    public void registerState() {
-
+    public void registerGameState() {
+        plugin.getGameManager().registerGameState(this);
     }
 
     @Override
@@ -26,6 +26,5 @@ public class ActiveGameState extends GameState {
 
     @Override
     public void deRegisterEvents() {
-
     }
 }

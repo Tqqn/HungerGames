@@ -2,6 +2,7 @@ package com.tqqn.hungergames.game;
 
 import com.tqqn.hungergames.HungerGames;
 import com.tqqn.hungergames.game.arena.Arena;
+import com.tqqn.hungergames.game.globallisteners.GlobalBlockPlaceBreakListener;
 import com.tqqn.hungergames.game.globallisteners.GlobalPlayerChatListener;
 import com.tqqn.hungergames.game.globallisteners.GlobalPlayerDamageListener;
 import com.tqqn.hungergames.game.globallisteners.GlobalPlayerJoinListener;
@@ -21,13 +22,13 @@ public class GameManager {
 
     private GameStates gameStates = GameStates.RESTARTING;
 
-    public List<? extends GameState> activeGameStates = new ArrayList<>();
+    public List<GameState> activeGameStates = new ArrayList<>();
 
     private final HungerGames plugin;
     @Getter
     private final Arena arena;
     private StartCountdownTask startCountdownTask;
-    //TODO: PlayerManager
+    //TODO: PlayerDataManager
     //TODO: ScoreboardManager
 
     public GameManager(HungerGames plugin) {
@@ -47,20 +48,28 @@ public class GameManager {
                 WaitingGameState waitingGameState = new WaitingGameState(plugin);
                 activeGameStates.add(waitingGameState);
                 waitingGameState.init();
+                gameStates = GameStates.WAITING;
             case STARTING:
                 StartingGameState startingGameState = new StartingGameState(plugin);
                 activeGameStates.add(startingGameState);
                 startingGameState.init();
                 startCountdownToStartGame();
+                gameStates = GameStates.STARTING;
             case ACTIVE:
                 ActiveGameState activeGameState = new ActiveGameState(plugin);
+                activeGameStates.add(activeGameState);
                 activeGameState.init();
+                gameStates = GameStates.ACTIVE;
             case END:
                 EndGameState endGameState = new EndGameState(plugin);
+                activeGameStates.add(endGameState);
                 endGameState.init();
+                gameStates = GameStates.END;
             case RESTARTING:
                 RestartingGameState restartingGameState = new RestartingGameState(plugin);
+                activeGameStates.add(restartingGameState);
                 restartingGameState.init();
+                gameStates = GameStates.RESTARTING;
         }
     }
 
@@ -78,11 +87,16 @@ public class GameManager {
         pluginManager.registerEvents(new GlobalPlayerChatListener(), plugin);
         pluginManager.registerEvents(new GlobalPlayerDamageListener(this), plugin);
         pluginManager.registerEvents(new GlobalPlayerJoinListener(this), plugin);
+        pluginManager.registerEvents(new GlobalBlockPlaceBreakListener(this), plugin);
     }
 
     public void unRegisterPreviousGameState() {
         if (activeGameStates.isEmpty()) return;
         activeGameStates.get(0).onDisable();
         activeGameStates.clear();
+    }
+
+    public void registerGameState(GameState gameState) {
+        activeGameStates.add(gameState);
     }
 }

@@ -3,18 +3,15 @@ package com.tqqn.hungergames.game.globallisteners;
 import com.tqqn.hungergames.game.GameManager;
 import com.tqqn.hungergames.game.GameStates;
 import com.tqqn.hungergames.playerdata.PluginPlayer;
+import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-
+@AllArgsConstructor
 public class GlobalPlayerJoinListener implements Listener {
 
     private final GameManager gameManager;
-
-    public GlobalPlayerJoinListener(GameManager gameManager) {
-        this.gameManager = gameManager;
-    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

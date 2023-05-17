@@ -31,6 +31,8 @@ public abstract class GameState {
         Bukkit.getLogger().info("Disabled Game-State: " + name);
     }
 
+    public abstract void registerGameState();
+
     public abstract void registerEvents();
 
     public abstract void deRegisterEvents();
