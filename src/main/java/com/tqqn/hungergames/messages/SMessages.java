@@ -6,9 +6,12 @@ import org.bukkit.Color;
 public enum SMessages {
 
     GAME_START_COUNTDOWN("&cGame is starting in &f%%SECONDS%%","%%SECONDS%%","",""),
-    PLAYER_JOIN("&f%%PLAYER%% &ehas joined the game (&b%%CURRENTPLAYERS%%&e/&b%%MAXPLAYERS%%", "%%PLAYER%%", "%%CURRENTPLAYERS%%", "%%MAXPLAYERS%%"),
+    GAME_END_COUNTDOWN("&cGame is ending in &f%%SECONDS%%", "%%SECONDS%%", "", ""),
+    PLAYER_JOIN("&f%%PLAYER%% &ehas joined the game (&b%%CURRENTPLAYERS%%&e/&b%%MAXPLAYERS%%&e)", "%%PLAYER%%", "%%CURRENTPLAYERS%%", "%%MAXPLAYERS%%"),
     PLAYER_DEATH_BY_PLAYER("&c%%PLAYER%% &ehas been killed by &c%%KILLER%%&e.", "%%PLAYER%%", "%%KILLER%%",""),
-    PLAYER_DEATH("&c%%PLAYER%% &edied.","","","");
+    PLAYER_DEATH("&c%%PLAYER%% &edied.","%%PLAYER%%","",""),
+    PLAYER_WINNER("&a%%PLAYER%% &ehas won the game!", "%%PLAYER%%", "", "");
+
 
     private final String message;
     private final String placeholder1;

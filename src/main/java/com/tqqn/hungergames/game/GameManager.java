@@ -7,11 +7,12 @@ import com.tqqn.hungergames.game.globallisteners.GlobalPlayerChatListener;
 import com.tqqn.hungergames.game.globallisteners.GlobalPlayerDamageListener;
 import com.tqqn.hungergames.game.globallisteners.GlobalPlayerJoinListener;
 import com.tqqn.hungergames.game.states.GameState;
-import com.tqqn.hungergames.game.states.activestate.ActiveGameState;
-import com.tqqn.hungergames.game.states.endstate.EndGameState;
-import com.tqqn.hungergames.game.states.restartingstate.RestartingGameState;
-import com.tqqn.hungergames.game.states.startingstate.StartingGameState;
-import com.tqqn.hungergames.game.states.waitingstate.WaitingGameState;
+import com.tqqn.hungergames.game.states.active.ActiveGameState;
+import com.tqqn.hungergames.game.states.end.EndGameState;
+import com.tqqn.hungergames.game.states.restarting.RestartingGameState;
+import com.tqqn.hungergames.game.states.starting.StartingGameState;
+import com.tqqn.hungergames.game.states.waiting.WaitingGameState;
+import com.tqqn.hungergames.game.tasks.EndCountdownTask;
 import com.tqqn.hungergames.game.tasks.StartCountdownTask;
 import lombok.Getter;
 import org.bukkit.plugin.PluginManager;
@@ -20,7 +21,7 @@ import java.util.*;
 
 public class GameManager {
 
-    private GameStates gameStates = GameStates.RESTARTING;
+    private GameStates gameStates = GameStates.WAITING;
 
     public List<GameState> activeGameStates = new ArrayList<>();
 
@@ -28,6 +29,7 @@ public class GameManager {
     @Getter
     private final Arena arena;
     private StartCountdownTask startCountdownTask;
+    private EndCountdownTask endCountdownTask;
     //TODO: PlayerDataManager
     //TODO: ScoreboardManager
 
@@ -64,6 +66,7 @@ public class GameManager {
                 EndGameState endGameState = new EndGameState(plugin);
                 activeGameStates.add(endGameState);
                 endGameState.init();
+                startEndCountDownTask();
                 gameStates = GameStates.END;
             case RESTARTING:
                 RestartingGameState restartingGameState = new RestartingGameState(plugin);
@@ -80,6 +83,11 @@ public class GameManager {
     private void startCountdownToStartGame() {
         this.startCountdownTask = new StartCountdownTask(this);
         this.startCountdownTask.runTaskTimer(plugin, 0, 20);
+    }
+
+    private void startEndCountDownTask() {
+        this.endCountdownTask = new EndCountdownTask(this);
+        this.endCountdownTask.runTaskTimer(plugin,0,20);
     }
 
     private void registerGlobalEvents() {

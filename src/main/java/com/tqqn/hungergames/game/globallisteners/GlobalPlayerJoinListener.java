@@ -4,6 +4,7 @@ import com.tqqn.hungergames.game.GameManager;
 import com.tqqn.hungergames.game.GameStates;
 import com.tqqn.hungergames.playerdata.PluginPlayer;
 import lombok.AllArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,23 +19,32 @@ public class GlobalPlayerJoinListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (gameManager.getGameStates() != GameStates.STARTING || gameManager.getGameStates() != GameStates.WAITING) {
+        if (gameManager.getGameStates() != GameStates.STARTING && gameManager.getGameStates() != GameStates.WAITING) {
+            System.out.println("1");
             if (!player.hasPermission("hungergames.joinstaff")) {
+                System.out.println("2");
                 player.kickPlayer("Game has already started!");
                 return;
             }
             if (gameManager.getGameStates() != GameStates.ACTIVE) return;
-            gameManager.getArena().addSpectatorToArena(new PluginPlayer(player.getUniqueId(), player.getDisplayName(), player));
+            System.out.println("3");
+            gameManager.getArena().addSpectatorToArena(new PluginPlayer(player.getUniqueId(), player.getDisplayName(), player, true));
 
         } else if (gameManager.getGameStates() == GameStates.STARTING || gameManager.getGameStates() == GameStates.WAITING) {
+            System.out.println("4");
             if (gameManager.getArena().isArenaFull()) {
+                System.out.println("5");
                 if (!player.hasPermission("hungergames.joinstaff")) {
+                    System.out.println("6");
                     player.kickPlayer("Game is already full!");
                 }
 
             } else {
-                gameManager.getArena().addPlayerToArena(new PluginPlayer(player.getUniqueId(), player.getDisplayName(), player));
-                if (gameManager.getArena().isArenaFull()) {
+                System.out.println("7");
+                gameManager.getArena().addPlayerToArena(new PluginPlayer(player.getUniqueId(), player.getDisplayName(), player, false));
+                Bukkit.getLogger().info("registered player.");
+                if (gameManager.getArena().canStart()) {
+                    System.out.println("8");
                     gameManager.setGameState(GameStates.STARTING);
                 }
             }

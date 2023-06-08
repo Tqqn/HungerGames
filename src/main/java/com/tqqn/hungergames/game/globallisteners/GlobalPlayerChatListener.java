@@ -13,6 +13,6 @@ public class GlobalPlayerChatListener implements Listener {
         event.setCancelled(true);
         Player player = event.getPlayer();
         String playerMessage = event.getMessage();
-        GameUtils.broadcastMessage(player.getDisplayName() + ": " + playerMessage);
+        GameUtils.broadcastMessage(player.getDisplayName() + "&f: " + playerMessage);
     }
 }

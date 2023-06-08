@@ -21,8 +21,6 @@ public class Arena {
     private final int minimumPlayers;
     @Getter
     private final int maximumPlayers;
-    @Getter
-    private PluginPlayer winner = null;
 
     private final List<Location> spawnLocations;
 
@@ -30,6 +28,8 @@ public class Arena {
     private Map<UUID, PluginPlayer> playersInArena = new HashMap<>();
     @Getter
     private Map<UUID, PluginPlayer> spectatorsInArena = new HashMap<>();
+
+    private PluginPlayer winner = null;
 
     public Arena(int minimumPlayers, int maximumPlayers, List<Location> spawnLocations) {
         this.minimumPlayers = minimumPlayers;
@@ -65,4 +65,16 @@ public class Arena {
         return playersInArena.get(uuid);
     }
 
+    public void removePlayerFromArena(UUID uuid) {
+        playersInArena.remove(uuid);
+    }
+
+    public PluginPlayer getWinner() {
+        for (PluginPlayer player : playersInArena.values()) {
+            if (winner == null) {
+                winner = player;
+            }
+        }
+        return winner;
+    }
 }

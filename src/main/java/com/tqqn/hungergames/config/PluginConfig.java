@@ -13,6 +13,7 @@ public class PluginConfig {
 
     public PluginConfig(HungerGames plugin) {
         this.plugin = plugin;
+        plugin.saveDefaultConfig();
     }
 
     public String getPrefix() {
@@ -37,7 +38,7 @@ public class PluginConfig {
 
     private Location getSpawnLocations(String key) {
         return new Location(
-                Bukkit.getWorld(plugin.getConfig().getString("arena.world")),
+                Bukkit.getWorld("world"),
                 plugin.getConfig().getDouble("arena.spawn-locations." + key + ".x"),
                 plugin.getConfig().getDouble("arena.spawn-locations." + key + ".y"),
                 plugin.getConfig().getDouble("arena.spawn-locations." + key + ".z"),

@@ -12,11 +12,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class StartCountdownTask extends BukkitRunnable {
 
     private int startGameTime = 10;
+    private final int minimumPlayers;
 
     private final GameManager gameManager;
 
     public StartCountdownTask(GameManager gameManager) {
         this.gameManager = gameManager;
+        this.minimumPlayers = gameManager.getArena().getMinimumPlayers();
     }
 
     @Override
@@ -26,7 +28,7 @@ public class StartCountdownTask extends BukkitRunnable {
             gameManager.setGameState(GameStates.ACTIVE);
             return;
         }
-        if (gameManager.getArena().getPlayersInArena().size() < gameManager.getArena().getMinimumPlayers()) {
+        if (gameManager.getArena().getPlayersInArena().size() <= this.minimumPlayers) {
             cancel();
             gameManager.setGameState(GameStates.WAITING);
             GameUtils.broadcastMessage(NMessages.CANCEL_RESTART_NOT_ENOUGH_PLAYERS.getMessage());

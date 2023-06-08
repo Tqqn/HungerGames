@@ -1,4 +1,4 @@
-package com.tqqn.hungergames.game.states.restartingstate;
+package com.tqqn.hungergames.game.states.restarting;
 
 import com.tqqn.hungergames.HungerGames;
 import com.tqqn.hungergames.game.states.GameState;
@@ -8,18 +8,8 @@ public class RestartingGameState extends GameState {
     private final HungerGames plugin;
 
     public RestartingGameState(HungerGames plugin) {
-        super("RestartingGameState", plugin.getGameManager());
+        super("RestartingGameState");
         this.plugin = plugin;
         super.init();
-    }
-
-    @Override
-    public void registerEvents() {
-
-    }
-
-    @Override
-    public void deRegisterEvents() {
-
     }
 }
