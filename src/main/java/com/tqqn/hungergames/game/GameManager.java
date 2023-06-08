@@ -15,13 +15,14 @@ import com.tqqn.hungergames.game.states.waiting.WaitingGameState;
 import com.tqqn.hungergames.game.tasks.EndCountdownTask;
 import com.tqqn.hungergames.game.tasks.StartCountdownTask;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import java.util.*;
 
 public class GameManager {
 
-    private GameStates gameStates = GameStates.WAITING;
+    private GameStates gameState = null;
 
     public List<GameState> activeGameStates = new ArrayList<>();
 
@@ -41,43 +42,44 @@ public class GameManager {
 
     public void setGameState(GameStates gameState) {
         //Checks if the new gameState is the same as the old gameState.
-        if (this.gameStates == gameState) return;
+        if (this.gameState == gameState) return;
         //Checks if the current gameState is active and the new gameState is not lobby or starting.
-        if (this.gameStates == GameStates.ACTIVE && (gameState == GameStates.RESTARTING || gameState == GameStates.STARTING)) return;
+        if (this.gameState == GameStates.ACTIVE && (gameState == GameStates.RESTARTING || gameState == GameStates.STARTING)) return;
 
         switch (gameState) {
             case WAITING:
                 WaitingGameState waitingGameState = new WaitingGameState(plugin);
                 activeGameStates.add(waitingGameState);
                 waitingGameState.init();
-                gameStates = GameStates.WAITING;
+                gameState = GameStates.WAITING;
+                Bukkit.getPluginManager().registerEvents(waitingGameState, plugin);
             case STARTING:
                 StartingGameState startingGameState = new StartingGameState(plugin);
                 activeGameStates.add(startingGameState);
                 startingGameState.init();
                 startCountdownToStartGame();
-                gameStates = GameStates.STARTING;
+                gameState = GameStates.STARTING;
             case ACTIVE:
-                ActiveGameState activeGameState = new ActiveGameState(plugin);
+                ActiveGameState activeGameState = new ActiveGameState(this);
                 activeGameStates.add(activeGameState);
                 activeGameState.init();
-                gameStates = GameStates.ACTIVE;
+                gameState = GameStates.ACTIVE;
             case END:
                 EndGameState endGameState = new EndGameState(plugin);
                 activeGameStates.add(endGameState);
                 endGameState.init();
                 startEndCountDownTask();
-                gameStates = GameStates.END;
+                gameState = GameStates.END;
             case RESTARTING:
                 RestartingGameState restartingGameState = new RestartingGameState(plugin);
                 activeGameStates.add(restartingGameState);
                 restartingGameState.init();
-                gameStates = GameStates.RESTARTING;
+                gameState = GameStates.RESTARTING;
         }
     }
 
     public GameStates getGameStates() {
-        return this.gameStates;
+        return this.gameState;
     }
 
     private void startCountdownToStartGame() {
