@@ -19,6 +19,8 @@ public class GlobalPlayerJoinListener implements Listener {
 
         Player player = event.getPlayer();
 
+        event.setJoinMessage("");
+
         if (gameManager.getGameStates() != GameStates.STARTING && gameManager.getGameStates() != GameStates.WAITING) {
             System.out.println("1");
             if (!player.hasPermission("hungergames.joinstaff")) {
@@ -26,9 +28,6 @@ public class GlobalPlayerJoinListener implements Listener {
                 player.kickPlayer("Game has already started!");
                 return;
             }
-            if (gameManager.getGameStates() != GameStates.ACTIVE) return;
-            System.out.println("3");
-            gameManager.getArena().addSpectatorToArena(new PluginPlayer(player.getUniqueId(), player.getDisplayName(), player, true));
 
         } else if (gameManager.getGameStates() == GameStates.STARTING || gameManager.getGameStates() == GameStates.WAITING) {
             System.out.println("4");
@@ -37,6 +36,7 @@ public class GlobalPlayerJoinListener implements Listener {
                 if (!player.hasPermission("hungergames.joinstaff")) {
                     System.out.println("6");
                     player.kickPlayer("Game is already full!");
+                    return;
                 }
 
             } else {
@@ -46,8 +46,13 @@ public class GlobalPlayerJoinListener implements Listener {
                 if (gameManager.getArena().canStart()) {
                     System.out.println("8");
                     gameManager.setGameState(GameStates.STARTING);
+                    return;
                 }
             }
         }
+
+        if (gameManager.getGameStates() != GameStates.ACTIVE && gameManager.getGameStates() != GameStates.END && gameManager.getGameStates() != GameStates.RESTARTING) return;
+        System.out.println("3");
+        gameManager.getArena().getPlayerInArena(player.getUniqueId()).handleSpectator();
     }
 }

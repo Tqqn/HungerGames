@@ -1,19 +1,16 @@
 package com.tqqn.hungergames.game.arena;
 
+import com.tqqn.hungergames.game.GameManager;
+import com.tqqn.hungergames.game.GameStates;
 import com.tqqn.hungergames.game.utils.GameUtils;
 import com.tqqn.hungergames.messages.SMessages;
 import com.tqqn.hungergames.playerdata.PluginPlayer;
 import com.tqqn.hungergames.sounds.Sounds;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Arena {
 
@@ -23,18 +20,21 @@ public class Arena {
     private final int maximumPlayers;
 
     private final List<Location> spawnLocations;
+    private final GameManager gameManager;
 
     @Getter
-    private Map<UUID, PluginPlayer> playersInArena = new HashMap<>();
+    private static Map<UUID, PluginPlayer> playersInArena = new HashMap<>();
+
     @Getter
-    private Map<UUID, PluginPlayer> spectatorsInArena = new HashMap<>();
+    private static List<PluginPlayer> alivePlayers = new ArrayList<>();
 
     private PluginPlayer winner = null;
 
-    public Arena(int minimumPlayers, int maximumPlayers, List<Location> spawnLocations) {
+    public Arena(int minimumPlayers, int maximumPlayers, List<Location> spawnLocations, GameManager gameManager) {
         this.minimumPlayers = minimumPlayers;
         this.maximumPlayers = maximumPlayers;
         this.spawnLocations = spawnLocations;
+        this.gameManager = gameManager;
     }
 
     public void addPlayerToArena(PluginPlayer player) {
@@ -42,15 +42,16 @@ public class Arena {
         playersInArena.put(player.getUuid(), player);
         GameUtils.broadcastMessage(SMessages.PLAYER_JOIN.getMessage(player.getDisplayName(),String.valueOf(getPlayersInArena().size()), String.valueOf(getMaximumPlayers())));
         Bukkit.getOnlinePlayers().forEach(Sounds.COUNTDOWN_SOUND::playPacketSound);
+        addAlivePlayer(player);
     }
 
-    public void addSpectatorToArena(PluginPlayer player) {
-        if (spectatorsInArena.containsKey(player.getUuid())) return;
-        spectatorsInArena.put(player.getUuid(), player);
+    public void removeAlivePlayer(PluginPlayer player) {
+        alivePlayers.remove(player);
+    }
 
-        if (player.getPlayer() == null) return;
-
-        player.getPlayer().setGameMode(GameMode.SPECTATOR);
+    public void addAlivePlayer(PluginPlayer player) {
+        if (alivePlayers.contains(player)) return;
+        alivePlayers.add(player);
     }
 
     public boolean isArenaFull() {
@@ -65,16 +66,18 @@ public class Arena {
         return playersInArena.get(uuid);
     }
 
-    public void removePlayerFromArena(UUID uuid) {
-        playersInArena.remove(uuid);
+    public void canEnd() {
+        if (getAlivePlayers().size() <= 1) {
+            gameManager.setGameState(GameStates.END);
+            GameUtils.broadcastMessage(SMessages.PLAYER_WINNER.getMessage(getWinner().getDisplayName()));
+        }
     }
 
     public PluginPlayer getWinner() {
-        for (PluginPlayer player : playersInArena.values()) {
+        for (PluginPlayer alivePlayer : alivePlayers)
             if (winner == null) {
-                winner = player;
+                winner = alivePlayer;
             }
-        }
         return winner;
     }
 }

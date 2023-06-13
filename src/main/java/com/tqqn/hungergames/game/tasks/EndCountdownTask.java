@@ -20,7 +20,7 @@ public class EndCountdownTask extends BukkitRunnable {
     public void run() {
         if (endGameTime == 0) {
             cancel();
-            gameManager.setGameState(GameStates.END);
+            gameManager.setGameState(GameStates.RESTARTING);
             return;
         }
 

@@ -29,9 +29,11 @@ public class StartCountdownTask extends BukkitRunnable {
             return;
         }
         if (gameManager.getArena().getPlayersInArena().size() <= this.minimumPlayers) {
+            System.out.println(gameManager.getArena().getPlayersInArena().size());
             cancel();
             gameManager.setGameState(GameStates.WAITING);
             GameUtils.broadcastMessage(NMessages.CANCEL_RESTART_NOT_ENOUGH_PLAYERS.getMessage());
+            return;
         }
 
         Bukkit.getOnlinePlayers().forEach(Sounds.COUNTDOWN_SOUND::playPacketSound);

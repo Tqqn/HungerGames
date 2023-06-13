@@ -16,15 +16,15 @@ import com.tqqn.hungergames.game.tasks.EndCountdownTask;
 import com.tqqn.hungergames.game.tasks.StartCountdownTask;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
 public class GameManager {
 
-    private GameStates gameState = null;
-
-    public List<GameState> activeGameStates = new ArrayList<>();
+    private GameStates gameState = GameStates.WAITING;
 
     private final HungerGames plugin;
     @Getter
@@ -36,8 +36,8 @@ public class GameManager {
 
     public GameManager(HungerGames plugin) {
         this.plugin = plugin;
-        this.arena = new Arena(plugin.getPluginConfig().getMinPlayers(), plugin.getPluginConfig().getMaxPlayers(), plugin.getPluginConfig().getSpawnLocations());
-        registerGlobalEvents();
+        this.arena = new Arena(plugin.getPluginConfig().getMinPlayers(), plugin.getPluginConfig().getMaxPlayers(), plugin.getPluginConfig().getSpawnLocations(), this);
+        registerEvents();
     }
 
     public void setGameState(GameStates gameState) {
@@ -49,32 +49,33 @@ public class GameManager {
         switch (gameState) {
             case WAITING:
                 WaitingGameState waitingGameState = new WaitingGameState(plugin);
-                activeGameStates.add(waitingGameState);
                 waitingGameState.init();
-                gameState = GameStates.WAITING;
+                this.gameState = GameStates.WAITING;
                 Bukkit.getPluginManager().registerEvents(waitingGameState, plugin);
+                break;
             case STARTING:
                 StartingGameState startingGameState = new StartingGameState(plugin);
-                activeGameStates.add(startingGameState);
                 startingGameState.init();
                 startCountdownToStartGame();
-                gameState = GameStates.STARTING;
+                this.gameState = GameStates.STARTING;
+                break;
             case ACTIVE:
                 ActiveGameState activeGameState = new ActiveGameState(this);
-                activeGameStates.add(activeGameState);
                 activeGameState.init();
-                gameState = GameStates.ACTIVE;
+                this.gameState = GameStates.ACTIVE;
+                Bukkit.getPluginManager().registerEvents(activeGameState, plugin);
+                break;
             case END:
                 EndGameState endGameState = new EndGameState(plugin);
-                activeGameStates.add(endGameState);
                 endGameState.init();
                 startEndCountDownTask();
-                gameState = GameStates.END;
+                this.gameState = GameStates.END;
+                break;
             case RESTARTING:
                 RestartingGameState restartingGameState = new RestartingGameState(plugin);
-                activeGameStates.add(restartingGameState);
                 restartingGameState.init();
-                gameState = GameStates.RESTARTING;
+                this.gameState = GameStates.RESTARTING;
+                break;
         }
     }
 
@@ -84,29 +85,19 @@ public class GameManager {
 
     private void startCountdownToStartGame() {
         this.startCountdownTask = new StartCountdownTask(this);
-        this.startCountdownTask.runTaskTimer(plugin, 0, 20);
+        this.startCountdownTask.runTaskTimerAsynchronously(plugin, 0, 20L);
     }
 
     private void startEndCountDownTask() {
         this.endCountdownTask = new EndCountdownTask(this);
-        this.endCountdownTask.runTaskTimer(plugin,0,20);
+        this.endCountdownTask.runTaskTimerAsynchronously(plugin, 0, 20L);
     }
 
-    private void registerGlobalEvents() {
+    private void registerEvents() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
         pluginManager.registerEvents(new GlobalPlayerChatListener(), plugin);
         pluginManager.registerEvents(new GlobalPlayerDamageListener(this), plugin);
         pluginManager.registerEvents(new GlobalPlayerJoinListener(this), plugin);
         pluginManager.registerEvents(new GlobalBlockPlaceBreakListener(this), plugin);
-    }
-
-    public void unRegisterPreviousGameState() {
-        if (activeGameStates.isEmpty()) return;
-        activeGameStates.get(0).onDisable();
-        activeGameStates.clear();
-    }
-
-    public void registerGameState(GameState gameState) {
-        activeGameStates.add(gameState);
     }
 }
