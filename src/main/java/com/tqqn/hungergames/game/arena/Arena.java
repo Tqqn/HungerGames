@@ -70,6 +70,8 @@ public class Arena {
         if (getAlivePlayers().size() <= 1) {
             gameManager.setGameState(GameStates.END);
             GameUtils.broadcastMessage(SMessages.PLAYER_WINNER.getMessage(getWinner().getDisplayName()));
+            if (getWinner().getPlayer() == null) return;
+            getWinner().getPlayer().sendTitle("&6Victory!",  "", 4, 4, 4);
         }
     }
 
